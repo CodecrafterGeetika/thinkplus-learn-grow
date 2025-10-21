@@ -1,12 +1,23 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Users, Award, TrendingUp, Quote } from "lucide-react";
+import { ArrowRight, BookOpen, Users, Award, TrendingUp, Quote, Trophy, Star } from "lucide-react";
+import { useState } from "react";
 import CourseCard from "@/components/CourseCard";
 import { courses } from "@/data/courses";
 import { testimonials } from "@/data/testimonials";
 
 const Home = () => {
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -99,6 +110,39 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Achievement Stats */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-16 fade-on-scroll">
+            <h3 className="text-3xl md:text-4xl font-bold mb-4">
+              Start your prep the <span className="text-primary text-4xl md:text-5xl font-extrabold">THINKPLUS</span> way
+            </h3>
+          </div>
+          
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {[
+              { number: "400+", label: "Our Happy Students", icon: Users },
+              { number: "600 Hrs", label: "Dedicated Lectures", icon: BookOpen },
+              { number: "10+ Yrs", label: "Experienced Faculty", icon: Award },
+              { number: "47", label: "IIM Admissions", icon: Trophy }
+            ].map((stat, index) => (
+              <div 
+                key={index}
+                className="group p-6 md:p-8 rounded-2xl bg-gradient-card border border-border/50 hover:border-primary/50 transition-all duration-500 hover:shadow-card-hover hover:scale-105 fade-on-scroll"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4 mx-auto group-hover:bg-primary/20 transition-colors duration-300">
+                  <stat.icon className="w-8 h-8 md:w-10 md:h-10 text-primary group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <h2 className="text-3xl md:text-4xl font-bold text-primary mb-2 group-hover:scale-110 transition-transform duration-300">{stat.number}</h2>
+                <p className="text-sm md:text-base text-muted-foreground">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Why Choose ThinkPlus */}
       <section className="py-20 bg-secondary">
         <div className="container mx-auto px-4">
@@ -182,35 +226,56 @@ const Home = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-secondary">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-gradient-to-br from-primary/5 via-background to-accent/5 relative overflow-hidden">
+        <div className="absolute top-10 right-10 text-primary/5 text-[200px] font-bold pointer-events-none select-none">"</div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16 fade-on-scroll">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">What Our Students Say</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Real stories from real students who transformed their careers with ThinkPlus.
-            </p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              What students have to say about <br />
+              <span className="text-primary text-4xl md:text-5xl font-extrabold">THINKPLUS:</span>
+            </h2>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {testimonials.slice(0, 3).map((testimonial, index) => (
-              <div
-                key={testimonial.id}
-                className="bg-card rounded-xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300 fade-on-scroll"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <Quote className="w-10 h-10 text-primary mb-4" />
-                <p className="text-muted-foreground mb-6">{testimonial.content}</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
-                    {testimonial.avatar}
-                  </div>
-                  <div>
-                    <div className="font-semibold">{testimonial.name}</div>
-                    <div className="text-sm text-muted-foreground">{testimonial.role}</div>
-                  </div>
+          
+          <div className="max-w-5xl mx-auto">
+            <div className="relative p-8 md:p-12 rounded-3xl bg-gradient-card border-2 border-primary/20 shadow-[0_20px_60px_-15px_rgba(236,72,153,0.3)] fade-on-scroll hover:shadow-[0_25px_70px_-15px_rgba(236,72,153,0.4)] transition-all duration-500">
+              <div className="absolute -top-4 -left-4 w-20 h-20 rounded-full bg-primary/10 blur-2xl" />
+              <div className="absolute -bottom-4 -right-4 w-32 h-32 rounded-full bg-accent/10 blur-3xl" />
+              
+              <div className="flex gap-1 mb-6">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-6 h-6 fill-primary text-primary animate-scale-in" style={{ animationDelay: `${i * 100}ms` }} />
+                ))}
+              </div>
+              
+              <p className="text-lg md:text-xl mb-8 italic leading-relaxed text-foreground/90 relative z-10 min-h-[120px]">
+                "{testimonials[currentTestimonial].content}"
+              </p>
+              
+              <div className="flex items-center gap-6 relative z-10">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center ring-4 ring-primary/10 transition-all duration-300 text-2xl font-bold text-primary">
+                  {testimonials[currentTestimonial].avatar}
+                </div>
+                <div>
+                  <h4 className="font-bold text-xl mb-1">{testimonials[currentTestimonial].name}</h4>
+                  <p className="text-primary font-semibold">{testimonials[currentTestimonial].role}</p>
                 </div>
               </div>
-            ))}
+            </div>
+            
+            <div className="flex justify-center gap-3 mt-10">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentTestimonial(index)}
+                  className={`h-3 rounded-full transition-all duration-300 ${
+                    index === currentTestimonial 
+                      ? 'bg-primary w-12 shadow-lg shadow-primary/50' 
+                      : 'bg-border w-3 hover:bg-primary/50 hover:w-6'
+                  }`}
+                  aria-label={`View testimonial ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
